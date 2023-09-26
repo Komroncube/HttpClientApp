@@ -6,5 +6,8 @@ HttpCrudMethod http = new HttpCrudMethod();
 string result;
 //result = await http.GetAllAsync();
 
+//await http.PostAsync("Kitchen");
+//await http.GetAllAsync();
+await http.PutAsync(3,"Garment");
 //result = await http.PostAsync();
-result = await http.DeleteAsync(3);
+//result = await http.DeleteAsync(4);

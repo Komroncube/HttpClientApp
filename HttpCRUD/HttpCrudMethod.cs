@@ -3,9 +3,11 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using static System.Net.WebRequestMethods;
 
 namespace HttpCRUD
 {
@@ -34,21 +36,16 @@ namespace HttpCRUD
             }
             return json;
         }
-        public async Task<string> PostAsync()
+        public async Task<string> PostAsync(string CategoryName)
         {
-            ProductForCreationDto product = new ProductForCreationDto()
-            {
-                Name = "Ruchka",
-                Price = 132,
-                CategoryId = 1,
-
-            };
+            
             string response;
-            var json = JsonConvert.SerializeObject(product);
-            var data = new StringContent(json, Encoding.UTF8, "application/json");
+            var json = JsonConvert.SerializeObject(CategoryName);
+            var maindata = new StringContent(json, Encoding.UTF8, "application/json");
             using(HttpClient client = new HttpClient())
             {
-                response = await client.PostAsync(url, data).Result.Content.ReadAsStringAsync();
+                response= await client.PostAsync(url, maindata).Result.Content.ReadAsStringAsync();
+                //response = await client.PostAsJsonAsync(url, data).Result.Content.ReadAsStringAsync();
             }
             return response;
         }
@@ -57,28 +54,21 @@ namespace HttpCRUD
             string response="";
             using(HttpClient client = new HttpClient())
             {
-
                 string query = string.Format("https://localhost:7153/api/Products/Categories/{0}", id);
                 var res = await client.DeleteAsync(query);
             }
             return response;
         }
-        public async Task<string> PutAsync(int id)
+        public async Task<string> PutAsync(int id, string name)
         {
-            ProductForCreationDto product = new ProductForCreationDto()
-            {
-                Name = "Ruchka",
-                Price = 132,
-                CategoryId = 1,
 
-            };
-            var json = JsonConvert.SerializeObject(product, Formatting.Indented);
+
             string response = "";
-            string query = string.Format("https://localhost:7153/api/Products/Categories/{0}", id);
-            var data = new StringContent(json, Encoding.UTF8, "application/json");
             
             using (HttpClient client = new HttpClient())
             {
+                string query = string.Format("https://localhost:7153/api/Products/Categories/{0}?name={1}", id, name);
+                var data = new StringContent(query, Encoding.UTF8, "application/json");
                 response = await client.PutAsync(query, data).Result.Content.ReadAsStringAsync();
             }
             return response;
